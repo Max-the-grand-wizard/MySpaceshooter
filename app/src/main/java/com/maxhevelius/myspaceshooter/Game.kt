@@ -3,19 +3,28 @@ package com.maxhevelius.myspaceshooter
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Paint
+import android.os.SystemClock.uptimeMillis
 import android.util.Log
 import android.view.SurfaceHolder
 import android.view.SurfaceView
+import kotlin.random.Random
+
+const val STAGE_WIDTH = 1280
+const val STAGE_HEIGHT = 720
+val RNG = Random(uptimeMillis())
+const val STAR_COUNT = 50
 
 class Game(context: Context?) : SurfaceView(context), Runnable, SurfaceHolder.Callback {
     private val TAG = "Game"
     lateinit var gameThread : Thread
     @Volatile var isRunning : Boolean = false
-    val star = Star()
-
+    val stars = ArrayList<Star>()
 
     init {
         holder?.addCallback(this)
+        holder?.setFixedSize(STAGE_WIDTH, STAGE_HEIGHT)
+        for (i in 0 until STAR_COUNT)
+            stars.add(Star())
     }
 
 
@@ -33,14 +42,18 @@ class Game(context: Context?) : SurfaceView(context), Runnable, SurfaceHolder.Ca
         val paint= Paint()
 
         //render all entities
-        star.render(canvas, paint )
+        for (star in stars) {
+            star.render(canvas, paint)
+        }
         holder.unlockCanvasAndPost(canvas)
 
     }
 
     private fun update() {
         //update all objects(entities)
-        star.update()
+        for (star in stars) {
+            star.update()
+        }
 
     }
 
@@ -61,7 +74,7 @@ class Game(context: Context?) : SurfaceView(context), Runnable, SurfaceHolder.Ca
     }
 
     override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
-        Log.d(TAG, "surfaceChanged()")
+        Log.d(TAG, "surfaceChanged(width:$width, height:$height)")
     }
 
     override fun surfaceDestroyed(holder: SurfaceHolder) {

@@ -10,9 +10,9 @@ class GameActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d(TAG, "Game Activity was launched")
         game = Game(this)
         setContentView(game)
-        Log.d(TAG, "Game Activity was launched")
     }
     override fun onPause() {
         super.onPause()

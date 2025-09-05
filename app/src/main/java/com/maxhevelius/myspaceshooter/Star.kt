@@ -10,8 +10,8 @@ class Star : Entity() {
 
     init{
 
-        x = 600f
-        y = 300f
+        x = RNG.nextInt(STAGE_WIDTH).toFloat()
+        y = RNG.nextInt(STAGE_HEIGHT).toFloat()
         velX = -6f
     }
 
@@ -20,7 +20,8 @@ class Star : Entity() {
         super.update()
         x += velX
         if (right < 0){
-            left = 600f
+            x = STAGE_WIDTH.toFloat()
+            centerY = RNG.nextInt(STAGE_HEIGHT).toFloat()
         }
     }
 
