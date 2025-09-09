@@ -1,5 +1,6 @@
 package com.maxhevelius.myspaceshooter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
@@ -18,16 +19,17 @@ val RNG = Random(uptimeMillis())
 const val STAR_COUNT = 50
 const val ENEMY_COUNT = 8
 
-class Game(context: Context?) : SurfaceView(context), Runnable, SurfaceHolder.Callback {
-    private val TAG = "Game"
-    lateinit var gameThread : Thread
+class Game(context: Context) : SurfaceView(context), Runnable, SurfaceHolder.Callback {
+    private val tag = "Game"
+    private lateinit var gameThread : Thread
     @Volatile var isRunning : Boolean = false
-    val stars = ArrayList<Star>()
-    val enemies = ArrayList<Enemy>()
-    val player = Player(this)
+    private val stars = ArrayList<Star>()
+    private val enemies = ArrayList<Enemy>()
+    private val player = Player(this)
     @Volatile var fingerDown = false
-    var isBoosting = false
-    var isGameOver = false
+    private var isBoosting = false
+    private var isGameOver = false
+    private var jukebox = Jukebox(context.assets)
 
     init {
         resources
@@ -41,7 +43,7 @@ class Game(context: Context?) : SurfaceView(context), Runnable, SurfaceHolder.Ca
         }
     }
     override fun run() {
-        Log.d(TAG, "run()")
+        Log.d(tag, "run()")
         while (isRunning){
             update()
             render()
@@ -115,11 +117,12 @@ class Game(context: Context?) : SurfaceView(context), Runnable, SurfaceHolder.Ca
             if (isColliding(enemy, player)){
                 enemy.onCollision(player)
                 player.onCollision(enemy)
-                //sound effects, maybe particle effects
+                jukebox.play(SFX.crash)
             }
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         when(event?.action){
             MotionEvent.ACTION_DOWN -> fingerDown = true
@@ -143,27 +146,31 @@ class Game(context: Context?) : SurfaceView(context), Runnable, SurfaceHolder.Ca
     }
 
     fun onPause(){
-        Log.d(TAG, "onPause()")
+        Log.d(tag, "onPause()")
     }
 
     fun onResume(){
-        Log.d(TAG, "onResume()")
+        Log.d(tag, "onResume()")
+    }
 
+    fun onDestroy(){
+        Log.d(tag, "onDestroy()")
+        jukebox.destroy()
     }
 
     override fun surfaceCreated(holder: SurfaceHolder) {
-        Log.d(TAG, "surfaceCreated()")
+        Log.d(tag, "surfaceCreated()")
         isRunning = true
         gameThread =Thread(this)
         gameThread.start()
     }
 
     override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
-        Log.d(TAG, "surfaceChanged(width:$width, height:$height)")
+        Log.d(tag, "surfaceChanged(width:$width, height:$height)")
     }
 
     override fun surfaceDestroyed(holder: SurfaceHolder) {
-        Log.d(TAG, "surfaceDestroyed()")
+        Log.d(tag, "surfaceDestroyed()")
         isRunning = false
         gameThread.join()
     }
