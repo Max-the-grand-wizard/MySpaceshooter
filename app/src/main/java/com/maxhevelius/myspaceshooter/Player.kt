@@ -7,22 +7,28 @@ import android.graphics.Paint
 import androidx.core.math.MathUtils.clamp
 import kotlin.math.absoluteValue
 
-const val PLAYER_HEIGHT = 100
+const val PLAYER_HEIGHT = 75
 const val GRAVITY = 0.5f
 const val DRAG = 0.97f
 const val ACCELERATION = 0.8f // on the x axis
 const val BOOST_FORCE = -0.8f // on the y axis
 const val MAX_VEL = 20f
 const val VELOCITY_EPSILON = 0.01f //small threshold for snapping to 0
+const val PLAYER_STARTING_HEALTH = 3
 
 class Player(game: Game) : Entity() {
     private val bitmap = createScaledBitmap(game, R.drawable.player)
+    var health = PLAYER_STARTING_HEALTH
 
     init{
         width = bitmap.width.toFloat()
         height = bitmap.height.toFloat()
         x=30f
+    }
 
+    override fun onCollision(that: Entity) {
+        super.onCollision(that)
+        health--
     }
 
     private fun createScaledBitmap(game : Game, resID : Int) : Bitmap{

@@ -14,25 +14,30 @@ const val STAGE_WIDTH = 1280
 const val STAGE_HEIGHT = 720
 val RNG = Random(uptimeMillis())
 const val STAR_COUNT = 50
+const val ENEMY_COUNT = 8
 
 class Game(context: Context?) : SurfaceView(context), Runnable, SurfaceHolder.Callback {
     private val TAG = "Game"
     lateinit var gameThread : Thread
     @Volatile var isRunning : Boolean = false
     val stars = ArrayList<Star>()
+    val enemies = ArrayList<Enemy>()
     val player = Player(this)
     @Volatile var fingerDown = false
     var isBoosting = false
+    var isGameOver = false
 
     init {
         resources
         holder?.addCallback(this)
         holder?.setFixedSize(STAGE_WIDTH, STAGE_HEIGHT)
-        for (i in 0 until STAR_COUNT)
+        for (i in 0 until STAR_COUNT) {
             stars.add(Star())
+        }
+        for (i in 0 until ENEMY_COUNT) {
+            enemies.add(Enemy(this))
+        }
     }
-
-
     override fun run() {
         Log.d(TAG, "run()")
         while (isRunning){
@@ -46,9 +51,11 @@ class Game(context: Context?) : SurfaceView(context), Runnable, SurfaceHolder.Ca
         canvas.drawColor(Color.BLUE)
         val paint= Paint()
 
-        //render all entities
         for (star in stars) {
             star.render(canvas, paint)
+        }
+        for (enemy in enemies) {
+            enemy.render(canvas, paint)
         }
         player.render(canvas, paint)
         holder.unlockCanvasAndPost(canvas)
@@ -56,11 +63,38 @@ class Game(context: Context?) : SurfaceView(context), Runnable, SurfaceHolder.Ca
     }
 
     private fun update() {
+        if(isGameOver){
+            return
+        }
         isBoosting = fingerDown
         //update all objects(entities)
         player.update(isBoosting)
+        for (enemy in enemies) {
+            enemy.update(player.velX)
+        }
         for (star in stars) {
             star.update(player.velX)
+        }
+
+        checkCollision()
+        checkGameOver()
+    }
+
+    private fun checkGameOver() {
+        if (player.health <0){
+            //do game over stuff
+            isGameOver = true
+        }
+
+    }
+
+    private fun checkCollision() {
+        for (enemy in enemies) {
+            if (isColliding(enemy, player)){
+                enemy.onCollision(player)
+                player.onCollision(enemy)
+                //sound effects, maybe particle effects
+            }
         }
     }
 
