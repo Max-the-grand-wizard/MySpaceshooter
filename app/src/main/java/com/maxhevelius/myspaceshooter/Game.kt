@@ -18,6 +18,8 @@ const val STAGE_HEIGHT = 720
 val RNG = Random(uptimeMillis())
 const val STAR_COUNT = 50
 const val ENEMY_COUNT = 8
+const val PLANET_COUNT = 1
+@Suppress("SpellCheckingInspection") //supressed spelling check för my own name
 const val PREFS = "com.maxhevelius.myspaceshooter"
 const val LONGEST_DIST = "longest_distance"
 
@@ -30,6 +32,7 @@ class Game(context: Context) : SurfaceView(context), Runnable, SurfaceHolder.Cal
     @Volatile var isRunning : Boolean = false
     private val stars = ArrayList<Star>()
     private val enemies = ArrayList<Enemy>()
+    private val planets = ArrayList<Planet>()
     private val player = Player(this)
     @Volatile var fingerDown = false
     private var isBoosting = false
@@ -42,6 +45,9 @@ class Game(context: Context) : SurfaceView(context), Runnable, SurfaceHolder.Cal
         holder?.setFixedSize(STAGE_WIDTH, STAGE_HEIGHT)
         for (i in 0 until STAR_COUNT) {
             stars.add(Star())
+        }
+        for (i in 0 until PLANET_COUNT) {
+            planets.add(Planet())
         }
         for (i in 0 until ENEMY_COUNT) {
             enemies.add(Enemy(this))
@@ -63,6 +69,9 @@ class Game(context: Context) : SurfaceView(context), Runnable, SurfaceHolder.Cal
 
         for (star in stars) {
             star.render(canvas, paint)
+        }
+        for (planet in planets) {
+            planet.render(canvas, paint)
         }
         for (enemy in enemies) {
             enemy.render(canvas, paint)
@@ -104,6 +113,9 @@ class Game(context: Context) : SurfaceView(context), Runnable, SurfaceHolder.Cal
         }
         for (star in stars) {
             star.update(player.velX)
+        }
+        for (planet in planets) {
+            planet.update(player.velX)
         }
 
         checkCollision()

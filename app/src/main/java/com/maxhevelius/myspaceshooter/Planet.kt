@@ -3,10 +3,10 @@ package com.maxhevelius.myspaceshooter
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.health.connect.datatypes.units.Velocity
+import kotlin.random.Random
 
-class Star : Entity() {
-    val radius = RNG.nextInt(2, 6).toFloat()
+class Planet : Entity() {
+    val radius = RNG.nextInt(30, 45).toFloat()
 
 
     init{
