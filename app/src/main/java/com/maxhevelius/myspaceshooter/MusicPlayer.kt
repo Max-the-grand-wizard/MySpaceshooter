@@ -1,6 +1,5 @@
 package com.maxhevelius.myspaceshooter
 
-import android.content.Context
 import android.content.res.AssetManager
 import android.media.MediaPlayer
 

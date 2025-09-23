@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.os.SystemClock
 import androidx.core.math.MathUtils.clamp
 import kotlin.math.absoluteValue
 
@@ -16,11 +17,18 @@ const val MAX_VEL = 20f
 const val VELOCITY_EPSILON = 0.01f //small threshold for snapping to 0
 const val PLAYER_STARTING_HEALTH = 3
 const val PLAYER_MARGIN_X = 20f
+private const val RECOVERY_DURATION = 2500L
 
 class Player(game: Game) : Entity() {
     private val bitmap = createScaledBitmap(game, R.drawable.player)
     var health = PLAYER_STARTING_HEALTH
     var distanceTraveled = 0f
+
+
+
+    private var lastHitTime: Long = 0L
+    val isRecovering: Boolean
+        get() = SystemClock.uptimeMillis() - lastHitTime < RECOVERY_DURATION
 
     init{
         width = bitmap.width.toFloat()
@@ -36,11 +44,15 @@ class Player(game: Game) : Entity() {
         centerY = STAGE_HEIGHT/2.0f
         velY = 0f
         velX = 0f
+        lastHitTime = 0L
     }
 
     override fun onCollision(that: Entity) {
         super.onCollision(that)
+        if (isRecovering) return // ignore collision under recovery
+
         health--
+        lastHitTime = SystemClock.uptimeMillis() //  recovery
     }
 
     private fun createScaledBitmap(game : Game, resID : Int) : Bitmap{
@@ -88,7 +100,9 @@ class Player(game: Game) : Entity() {
     }
 
     override fun render(canvas: Canvas, paint: Paint) {
-        super.render(canvas, paint)
-        canvas.drawBitmap(bitmap, x, y, paint )
+
+        if (!isRecovering || (SystemClock.uptimeMillis() / 200) % 2 == 0L) {
+            canvas.drawBitmap(bitmap, x, y, paint)
+        }
     }
 }

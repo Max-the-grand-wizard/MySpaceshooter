@@ -2,6 +2,7 @@ package com.maxhevelius.myspaceshooter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
@@ -38,6 +39,7 @@ class Game(context: Context) : SurfaceView(context), Runnable, SurfaceHolder.Cal
     private var isBoosting = false
     private var isGameOver = false
     private var jukebox = Jukebox(context.assets)
+    private val explosions = ArrayList<Explosion>()
 
     init {
         resources
@@ -76,9 +78,17 @@ class Game(context: Context) : SurfaceView(context), Runnable, SurfaceHolder.Cal
         for (enemy in enemies) {
             enemy.render(canvas, paint)
         }
+
+
         player.render(canvas, paint)
         renderHud(canvas, paint)
+
+        for (explosion in explosions) {
+            explosion.render(canvas, paint)
+        }
+
         holder.unlockCanvasAndPost(canvas)
+
 
     }
 
@@ -117,6 +127,9 @@ class Game(context: Context) : SurfaceView(context), Runnable, SurfaceHolder.Cal
         for (planet in planets) {
             planet.update(player.velX)
         }
+        for (explosion in explosions) {
+            explosion.update()
+        }
 
         checkCollision()
         checkGameOver()
@@ -135,13 +148,28 @@ class Game(context: Context) : SurfaceView(context), Runnable, SurfaceHolder.Cal
 
     private fun checkCollision() {
         for (enemy in enemies) {
-            if (isColliding(enemy, player)){
+            if (isColliding(enemy, player)) {
                 enemy.onCollision(player)
                 player.onCollision(enemy)
                 jukebox.play(SFX.crash)
+
+                val explosionOffsetY = -10f //
+
+
+                // explosion creation
+                val freeExplosion = explosions.find { !it.isActive }
+                if (freeExplosion != null) {
+                    val explosionX = player.x + player.width
+                    val explosionY = (player.y + player.height / 2f + enemy.y + enemy.height / 2f) / 2f
+
+                    val freeExplosion = explosions.find { !it.isActive }
+                    freeExplosion?.activate(explosionX, explosionY)
+
+                }
             }
         }
     }
+
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
@@ -157,6 +185,16 @@ class Game(context: Context) : SurfaceView(context), Runnable, SurfaceHolder.Cal
         }
         return true
     }
+
+    private val explosionBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.pow)
+
+    init {
+        // ...
+        for (i in 0 until 10) {
+            explosions.add(Explosion(explosionBitmap))
+        }
+    }
+
 
     private fun restart() {
         for (enemy in enemies){
