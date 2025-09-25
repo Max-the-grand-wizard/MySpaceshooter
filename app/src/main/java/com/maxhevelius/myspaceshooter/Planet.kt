@@ -3,10 +3,9 @@ package com.maxhevelius.myspaceshooter
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import kotlin.random.Random
 
 class Planet : Entity() {
-    val radius = RNG.nextInt(30, 45).toFloat()
+    private val radius = RNG.nextInt(60, 90).toFloat()
 
 
     init{
@@ -38,7 +37,4 @@ class Planet : Entity() {
         canvas.drawCircle(x, y, radius, paint)
     }
 
-    override fun onCollision(that: Entity) {
-        super.onCollision(that)
-    }
 }

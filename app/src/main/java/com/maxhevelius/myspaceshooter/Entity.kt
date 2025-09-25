@@ -41,6 +41,7 @@ abstract class Entity {
         set(value) {
             y = value - height
         }
+    @Suppress("unused") //used in the tutorial so might be usefully later
     var centerX: Float
         get() = x + (width * 0.5f)
         set(value) {

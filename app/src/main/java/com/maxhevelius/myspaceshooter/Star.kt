@@ -3,10 +3,9 @@ package com.maxhevelius.myspaceshooter
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.health.connect.datatypes.units.Velocity
 
 class Star : Entity() {
-    val radius = RNG.nextInt(2, 6).toFloat()
+    private val radius = RNG.nextInt(2, 6).toFloat()
 
 
     init{
@@ -38,7 +37,4 @@ class Star : Entity() {
         canvas.drawCircle(x, y, radius, paint)
     }
 
-    override fun onCollision(that: Entity) {
-        super.onCollision(that)
-    }
 }

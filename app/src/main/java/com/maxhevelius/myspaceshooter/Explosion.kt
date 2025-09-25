@@ -1,7 +1,6 @@
 package com.maxhevelius.myspaceshooter
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.os.SystemClock
@@ -11,8 +10,8 @@ const val EXPLOSION_DURATION = 500L // Explosion in ms
 class Explosion(
     private val bitmap: Bitmap
 ) {
-    var x: Float = 0f
-    var y: Float = 0f
+    private var x: Float = 0f
+    private var y: Float = 0f
     var isActive: Boolean = false
         private set
 

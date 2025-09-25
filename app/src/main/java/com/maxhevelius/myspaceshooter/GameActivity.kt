@@ -5,13 +5,13 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 
 class GameActivity : AppCompatActivity() {
-    private val TAG = "GameActivity"
-    lateinit var game : Game
+    private val tag = "GameActivity"
+    private lateinit var game : Game
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(TAG, "Game Activity was launched")
+        Log.d(tag, "Game Activity was launched")
         MusicPlayer.start(assets, "game_music.mp3")
         game = Game(this)
         setContentView(game)

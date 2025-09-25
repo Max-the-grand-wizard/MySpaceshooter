@@ -9,7 +9,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
-    private val TAG = "MainMenuActivity"
+    private val tag = "MainMenuActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
         MusicPlayer.start(assets, "menu_music.mp3")
 
         findViewById<Button>(R.id.startGameButton)?.setOnClickListener {
-            Log.d(TAG, "Start game button pressed")
+            Log.d(tag, "Start game button pressed")
 
 
 

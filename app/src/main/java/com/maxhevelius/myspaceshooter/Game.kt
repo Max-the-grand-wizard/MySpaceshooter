@@ -159,8 +159,6 @@ class Game(context: Context) : SurfaceView(context), Runnable, SurfaceHolder.Cal
                 player.onCollision(enemy)
                 jukebox.play(SFX.crash)
 
-                val explosionOffsetY = -10f //
-
 
                 // explosion creation
                 val freeExplosion = explosions.find { !it.isActive }
@@ -168,8 +166,7 @@ class Game(context: Context) : SurfaceView(context), Runnable, SurfaceHolder.Cal
                     val explosionX = player.x + player.width
                     val explosionY = (player.y + player.height / 2f + enemy.y + enemy.height / 2f) / 2f
 
-                    val freeExplosion = explosions.find { !it.isActive }
-                    freeExplosion?.activate(explosionX, explosionY)
+                    freeExplosion.activate(explosionX, explosionY)
 
                 }
             }

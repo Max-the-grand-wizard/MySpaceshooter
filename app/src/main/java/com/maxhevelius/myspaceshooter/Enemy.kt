@@ -39,7 +39,7 @@ class Enemy(game: Game) : Entity() {
         return  flipVertically(scaled)
     }
 
-    fun flip(src: Bitmap, horizontally: Boolean) : Bitmap{
+    private fun flip(src: Bitmap, horizontally: Boolean) : Bitmap{
         val matrix = Matrix()
         val cx = src.width / 2f
         val cy = src.height / 2f
@@ -51,7 +51,8 @@ class Enemy(game: Game) : Entity() {
         return Bitmap.createBitmap(src, 0, 0, src.width, src.height, matrix, true)
     }
 
-    fun flipVertically(src: Bitmap) = flip(src, horizontally = false)
+    private fun flipVertically(src: Bitmap) = flip(src, horizontally = false)
+    @Suppress("unused") //used in the tutorial so might be usefully later
     fun flipHorizontally(src: Bitmap) = flip(src, horizontally = true)
 
     fun update(playerVelocity: Float) {
