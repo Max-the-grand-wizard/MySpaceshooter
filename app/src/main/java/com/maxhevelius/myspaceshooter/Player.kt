@@ -27,7 +27,7 @@ class Player(game: Game) : Entity() {
 
 
     private var lastHitTime: Long = 0L
-    val isRecovering: Boolean
+    private val isRecovering: Boolean
         get() = SystemClock.uptimeMillis() - lastHitTime < RECOVERY_DURATION
 
     init{

@@ -2,6 +2,8 @@ package com.maxhevelius.myspaceshooter
 
 import android.content.res.AssetManager
 import android.media.MediaPlayer
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 
 object MusicPlayer {
@@ -45,10 +47,17 @@ object MusicPlayer {
         }
     }
 
+    fun duckVolume(durationMs: Long, duckLevel: Float = 0.1f) {
+        bgm?.setVolume(duckLevel, duckLevel)
+        Handler(Looper.getMainLooper()).postDelayed({
+            bgm?.setVolume(1f, 1f) // class to handle lowering volume
+        }, durationMs)
+    }
 
 
 
-    fun stop() {
+
+    private fun stop() {
         try {
             bgm?.stop()
         } catch (e: Exception) {

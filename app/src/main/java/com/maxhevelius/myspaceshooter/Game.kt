@@ -40,6 +40,8 @@ class Game(context: Context) : SurfaceView(context), Runnable, SurfaceHolder.Cal
     private var isGameOver = false
     private var jukebox = Jukebox(context.assets)
     private val explosions = ArrayList<Explosion>()
+    private var startSoundPlayed = false
+
 
     init {
         resources
@@ -142,6 +144,10 @@ class Game(context: Context) : SurfaceView(context), Runnable, SurfaceHolder.Cal
                 editor.apply()
             }
             isGameOver = true
+            MusicPlayer.duckVolume(3000) //duration of sound effect
+
+
+            jukebox.play(SFX.death)
         }
 
     }
@@ -173,18 +179,27 @@ class Game(context: Context) : SurfaceView(context), Runnable, SurfaceHolder.Cal
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
-        when(event?.action){
-            MotionEvent.ACTION_DOWN -> fingerDown = true
-                MotionEvent.ACTION_UP -> {
-                    fingerDown = false
-                    if (isGameOver){
-                        restart()
-                    }
-                }
+        when (event?.action) {
+            MotionEvent.ACTION_DOWN -> {
+                fingerDown = true
 
+                if (!startSoundPlayed) {
+                    jukebox.play(SFX.start)
+                    startSoundPlayed = true
+                }
+            }
+
+            MotionEvent.ACTION_UP -> {
+                fingerDown = false
+                if (isGameOver) {
+                    restart()
+                    startSoundPlayed = false
+                }
+            }
         }
         return true
     }
+
 
     private val explosionBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.pow)
 
@@ -223,6 +238,8 @@ class Game(context: Context) : SurfaceView(context), Runnable, SurfaceHolder.Cal
         isRunning = true
         gameThread =Thread(this)
         gameThread.start()
+
+        jukebox.play(SFX.start)
     }
 
     override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {

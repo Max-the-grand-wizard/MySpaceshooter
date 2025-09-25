@@ -6,7 +6,7 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.os.SystemClock
 
-const val EXPLOSION_DURATION = 500L // hur länge explosionen visas i ms
+const val EXPLOSION_DURATION = 500L // Explosion in ms
 
 class Explosion(
     private val bitmap: Bitmap
