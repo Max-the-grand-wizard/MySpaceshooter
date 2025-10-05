@@ -38,7 +38,7 @@ class Game(context: Context) : SurfaceView(context), Runnable, SurfaceHolder.Cal
     @Volatile var fingerDown = false
     private var isBoosting = false
     private var isGameOver = false
-    private var jukebox = Jukebox(context.assets)
+    private var jukebox: Jukebox
     private val explosions = ArrayList<Explosion>()
     private var startSoundPlayed = false
 
@@ -57,6 +57,8 @@ class Game(context: Context) : SurfaceView(context), Runnable, SurfaceHolder.Cal
             enemies.add(Enemy(this))
         }
         maxDistanceTraveled = prefs.getFloat(LONGEST_DIST, 0.0f)
+
+        jukebox = Jukebox(context.assets)
     }
     override fun run() {
         Log.d(tag, "run()")
@@ -101,14 +103,14 @@ class Game(context: Context) : SurfaceView(context), Runnable, SurfaceHolder.Cal
         paint.textSize = textSize
         paint.textAlign = Paint.Align.LEFT
         if (!isGameOver) {
-            canvas.drawText("Health: ${player.health}", textPosition, textSize, paint)
-            canvas.drawText("Distance: ${round( player.distanceTraveled)}", textPosition, textSize*2, paint)
+            canvas.drawText(context.getString(R.string.health, player.health), textPosition, textSize, paint)
+            canvas.drawText(context.getString(R.string.distance, round(player.distanceTraveled).toInt()), textPosition, textSize*2, paint)
         }else{
             val centerX = STAGE_WIDTH/2.0f
             val centerY = STAGE_HEIGHT/2.0f
             paint.textAlign = Paint.Align.CENTER
-            canvas.drawText("GAME OVER", centerX, centerY, paint)
-            canvas.drawText("Press to restart", centerX, centerY + textSize, paint)
+            canvas.drawText(context.getString(R.string.game_over), centerX, centerY, paint)
+            canvas.drawText(context.getString(R.string.press_to_restart), centerX, centerY + textSize, paint)
         }
 
     }
@@ -144,7 +146,6 @@ class Game(context: Context) : SurfaceView(context), Runnable, SurfaceHolder.Cal
                 editor.apply()
             }
             isGameOver = true
-            MusicPlayer.duckVolume(3000) //duration of sound effect
 
 
             jukebox.play(SFX.death)
@@ -197,15 +198,18 @@ class Game(context: Context) : SurfaceView(context), Runnable, SurfaceHolder.Cal
         return true
     }
 
-
-    private val explosionBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.pow)
+    private val explosionFrames = listOf(
+        BitmapFactory.decodeResource(context.resources, R.drawable.pow),
+        BitmapFactory.decodeResource(context.resources, R.drawable.pow2),
+        BitmapFactory.decodeResource(context.resources, R.drawable.pow3)
+    )
 
     init {
-        // ...
         for (i in 0 until 10) {
-            explosions.add(Explosion(explosionBitmap))
+            explosions.add(Explosion(explosionFrames))
         }
     }
+
 
 
     private fun restart() {
@@ -236,7 +240,7 @@ class Game(context: Context) : SurfaceView(context), Runnable, SurfaceHolder.Cal
         gameThread =Thread(this)
         gameThread.start()
 
-        jukebox.play(SFX.start)
+
     }
 
     override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {

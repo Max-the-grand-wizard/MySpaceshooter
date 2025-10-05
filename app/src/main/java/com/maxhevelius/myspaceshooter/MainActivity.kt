@@ -17,7 +17,6 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
-        MusicPlayer.start(assets, "menu_music.mp3")
 
         findViewById<Button>(R.id.startGameButton)?.setOnClickListener {
             Log.d(tag, "Start game button pressed")
@@ -30,7 +29,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        MusicPlayer.start(assets, "menu_music.mp3")
 
         val prefs = getSharedPreferences(PREFS, MODE_PRIVATE)
         val longestDistance = prefs.getFloat(LONGEST_DIST, 0.0f)
@@ -40,7 +38,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        MusicPlayer.pause()
     }
 
 

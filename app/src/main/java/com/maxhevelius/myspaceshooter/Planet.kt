@@ -6,6 +6,8 @@ import android.graphics.Paint
 
 class Planet : Entity() {
     private val radius = RNG.nextInt(60, 90).toFloat()
+    private var color = listOf(Color.WHITE, Color.YELLOW, Color.CYAN).random()
+
 
 
     init{
@@ -23,6 +25,7 @@ class Planet : Entity() {
         if (right < 0){
             x = STAGE_WIDTH.toFloat()
             centerY = RNG.nextInt(STAGE_HEIGHT).toFloat()
+            color = listOf(Color.WHITE, Color.YELLOW, Color.CYAN).random()
         }
     }
 
@@ -30,8 +33,7 @@ class Planet : Entity() {
 
     override fun render(canvas: Canvas, paint: Paint) {
         super.render(canvas, paint)
-        val colors = listOf(Color.WHITE, Color.YELLOW, Color.CYAN)
-        paint.color = colors.random()
+        paint.color = color
 
         //paint.color = Color.YELLOW
         canvas.drawCircle(x, y, radius, paint)

@@ -5,10 +5,11 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.os.SystemClock
 
-const val EXPLOSION_DURATION = 500L // Explosion in ms
+const val EXPLOSION_DURATION = 75L // Explosion in ms
 
 class Explosion(
-    private val bitmap: Bitmap
+    private val frames: List<Bitmap>
+
 ) {
     private var x: Float = 0f
     private var y: Float = 0f
@@ -18,22 +19,26 @@ class Explosion(
     private var startTime: Long = 0L
 
     fun activate(centerX: Float, centerY: Float) {
-        x = centerX - bitmap.width / 2f
-        y = centerY - bitmap.height / 2f
+        x = centerX - frames[0].width / 2f
+        y = centerY - frames[0].height / 2f
         startTime = SystemClock.uptimeMillis()
         isActive = true
     }
 
     fun update() {
         if (!isActive) return
-        val now = SystemClock.uptimeMillis()
-        if (now - startTime > EXPLOSION_DURATION) {
-            isActive = false
-        }
-    }
+        val elapsed = SystemClock.uptimeMillis() - startTime
+        val totalDuration = EXPLOSION_DURATION * frames.size
+        if (elapsed >= totalDuration) isActive = false
 
-    fun render(canvas: Canvas, paint: Paint) {
-        if (!isActive) return
-        canvas.drawBitmap(bitmap, x, y, paint)
-    }
+        }
+
+
+fun render(canvas: Canvas, paint: Paint) {
+    if (!isActive) return
+    val elapsed = SystemClock.uptimeMillis() - startTime
+    val frameIndex = ((elapsed / EXPLOSION_DURATION).toInt()).coerceAtMost(frames.size - 1)
+    canvas.drawBitmap(frames[frameIndex], x, y, paint)
+}
+
 }
